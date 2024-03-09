@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 typedef enum {
     SEMI,
@@ -29,7 +30,7 @@ typedef struct {
     int value;
 } TokenLiteral;
 
-TokenLiteral generateNumber(char current, FILE *file) {
+TokenLiteral *generateNumber(char current, FILE *file) {
     TokenLiteral *token = malloc(sizeof(TokenLiteral));
     token->type = INT;
     char *value = malloc(sizeof(char) * 8);
@@ -40,9 +41,29 @@ TokenLiteral generateNumber(char current, FILE *file) {
         ++valueIndex;
         current = fgetc(file);
     }
+    ungetc(current, file);
     token->value = atoi(value);
     free(value);
-    return *token;
+    return token;
+}
+
+TokenKeyword *generateKeyword(char current, FILE *file) {
+    TokenKeyword *token = malloc(sizeof(TokenKeyword));
+    char *keyword = malloc(sizeof(char) * 8);
+    int keywordIndex = 0;
+    while (isalpha(current) && current != EOF) {
+        keyword[keywordIndex] = current;
+        current = fgetc(file);
+        ++keywordIndex;
+    }
+    ungetc(current, file);
+    if (strcmp(keyword, "exit") == 0) {
+        printf("Exit found\n");
+        token->type = EXIT;
+    }
+    printf("Found keyword : %s\n", keyword);
+    free(keyword);
+    return token;
 }
 
 
@@ -60,12 +81,13 @@ void lexer(FILE *file) {
             printf("Parenthese fermée\n");
         }
         else if (isdigit(current)) {
-            TokenLiteral tk = generateNumber(current, file);
-            printf("Digit : %d", tk.value);
+            TokenLiteral *tk = generateNumber(current, file);
+            printf("Digit : %d\n", tk->value);
             //printf("FOUND DIGIT : %d\n", current-'0');
         }
         else if (isalpha(current)) {
-            printf("Char : %c\n", current);
+            TokenKeyword *tk = generateKeyword(current, file);
+            //printf("%s", tk-value);
         }
         current = fgetc(file);
     }
