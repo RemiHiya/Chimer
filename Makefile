@@ -1,19 +1,35 @@
-exec = a.out
-sources = $(wildcard src/*.c)
-objetcs = $(sources:.c=.o)
-flags = -g -Wall -lm -ldl - fPIC -rdynamic -Wextra
+# Variables
+CC = gcc
+CFLAGS = -Wall -Wextra -Isrc/include
+LDFLAGS =
+SRC_DIR = src
+BUILD_DIR = build
+EXECUTABLE = program
 
-$(exec): $(objects)
-	gcc $(objects) $(flags) -o $(exec)
+# List of source files
+SRCS = $(wildcard $(SRC_DIR)/*.c)
 
-%.o %.c include/%.h
-	gcc -c $(flags) $< -o $@
+# List of object files
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
+# Default target
+all: $(EXECUTABLE)
+
+# Rule to link the executable
+$(EXECUTABLE): $(OBJS)
+	$(CC) $(LDFLAGS) $^ -o $@
+
+# Rule to compile source files
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule to create build directory
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+# Clean target
 clean:
-	-rm *.out
-	-rm *.o
-	-rm *.a
-	-rm src/*.o
+	rm -rf $(BUILD_DIR) $(EXECUTABLE)
 
-lint:
-	clang-tidy src/*.c src/include/*.h
+# Phony targets
+.PHONY: all clean

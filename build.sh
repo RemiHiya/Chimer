@@ -1,1 +1,1 @@
-gcc main.c -o main -Wall -Wextra
+gcc -g -Wall -Wextra -lm -ldl -fPIC -rdynamic ./src/*.c

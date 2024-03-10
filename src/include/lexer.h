@@ -15,8 +15,10 @@ lexer_T *initLexer(char *src);
 void lexerAdvance(lexer_T *lexer);
 char lexerPeak(lexer_T *lexer, int offset);
 token_T *lexerAdvanceWith(lexer_T *lexer, token_T *token);
+token_T *lexerAdvanceCurrent(lexer_T *lexer, int type);
 void lexerSkipWhitespace(lexer_T *lexer);
 token_T *lexerParseId(lexer_T *lexer);
+token_T *lexerParseNumber(lexer_T *lexer);
 token_T *lexerNextToken(lexer_T *lexer);
 
 #endif // CHR_LEXER_H_
