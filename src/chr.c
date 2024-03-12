@@ -13,8 +13,6 @@ void chrCompile(char *src) {
     AST_T *root = parserParse(parser);
     token_T *tok = 0;
 
-    printf("%d\n", (int)root->children->size);
-
     while ((tok = lexerNextToken(lexer))->type != TOKEN_EOF) {
         printf("%s\n", tokenToStr(tok));
     }

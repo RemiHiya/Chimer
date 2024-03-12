@@ -18,6 +18,8 @@ token_T *parserEat(parser_T *parser, int type);
 
 AST_T *parserParse(parser_T *parser);
 
+AST_T *parserParseList(parser_T *parser);
+
 AST_T *parserParseId(parser_T *parser);
 
 AST_T *parserParseExpr(parser_T *parser);

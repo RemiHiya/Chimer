@@ -6,16 +6,19 @@ typedef struct AST_STRUCT {
     enum {
         AST_COMPOUND,
         AST_FUNCTION,
+        AST_CALL,
         AST_ASSIGNEMENT,
         AST_TYPE_DEFINITION,
         AST_VARIABLE,
         AST_STATEMENT,
         AST_NOOP,
+        AST_INT,
         AST_TYPE,
     } type;
     list_T *children;
     char *name;
     struct AST_STRUCT *value;
+    int intValue;
     int data_type;
 } AST_T;
 

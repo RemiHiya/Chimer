@@ -75,11 +75,12 @@ token_T *lexerNextToken(lexer_T *lexer) {
         }
 
         if (isdigit(lexer->c)) {
-            return lexerAdvanceWith(lexer, lexerParseNumber(lexer));
+            return lexerParseNumber(lexer);
         }
         switch (lexer->c) {
             case '=': {
-                if (lexerPeak(lexer, 1) == '>') return lexerAdvanceWith(lexer, initToken("=>", TOKEN_ARROW_RIGHT));
+                if (lexerPeak(lexer, 1) == '>')
+                    return lexerAdvanceWith(lexer, lexerAdvanceWith(lexer, initToken("=>", TOKEN_ARROW_RIGHT)));
                 return lexerAdvanceWith(lexer, initToken("=", TOKEN_EQUALS));
             } break;
             case '(': return lexerAdvanceCurrent(lexer, TOKEN_LPAREN);
