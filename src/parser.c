@@ -3,6 +3,7 @@
 #include "include/lexer.h"
 #include "include/list.h"
 #include "include/token.h"
+#include "include/types.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -45,6 +46,22 @@ AST_T *parserParseId(parser_T *parser) {
     // Parse variable
     AST_T *ast = initAst(AST_VARIABLE);
     ast->name = value;
+
+    if (parser->token->type == TOKEN_COLON) {
+        parserEat(parser, TOKEN_COLON);
+
+        while (parser->token->type == TOKEN_ID) {
+            ast->data_type = typeNameToInt(parser->token->value);
+            parserEat(parser, TOKEN_ID);
+            if (parser->token->type == TOKEN_LT) {
+                parserEat(parser, TOKEN_LT);
+                ast->data_type += typeNameToInt(parser->token->value);
+                parserEat(parser, TOKEN_ID);
+                parserEat(parser, TOKEN_GT);
+            }
+        }
+    }
+
     return ast;
 }
 
@@ -59,6 +76,21 @@ AST_T *parserParseList(parser_T *parser) {
         listPush(compound->children, parserParseExpr(parser));
     }
     parserEat(parser, TOKEN_RPAREN);
+
+    if (parser->token->type == TOKEN_COLON) {
+        parserEat(parser, TOKEN_COLON);
+
+        while (parser->token->type == TOKEN_ID) {
+            compound->data_type = typeNameToInt(parser->token->value);
+            parserEat(parser, TOKEN_ID);
+            if (parser->token->type == TOKEN_LT) {
+                parserEat(parser, TOKEN_LT);
+                compound->data_type += typeNameToInt(parser->token->value);
+                parserEat(parser, TOKEN_ID);
+                parserEat(parser, TOKEN_GT);
+            }
+        }
+    }
 
     return compound;
 }
