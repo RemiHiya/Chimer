@@ -21,6 +21,8 @@ typedef struct TOKEN_STRUCT {
 } type;
 } token_T;
 
-token_T* init_token(char* value, int type);
+token_T *initToken(char* value, int type);
+
+char *tokenToStr(token_T *token);
 
 #endif // CHR_TOKEN_H

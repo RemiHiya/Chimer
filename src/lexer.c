@@ -9,6 +9,7 @@
 lexer_T *initLexer(char *src) {
     lexer_T *lexer = calloc(1, sizeof(struct LEXER_STRUCT));
     lexer->src = src;
+    lexer->src_size = strlen(src);
     lexer->i = 0;
     lexer->c = src[lexer->i];
 
@@ -36,7 +37,7 @@ token_T *lexerAdvanceCurrent(lexer_T *lexer, int type) {
     value[0] = lexer->c;
     value[1] = '\0';
 
-    token_T *token = init_token(value, type);
+    token_T *token = initToken(value, type);
     lexerAdvance(lexer);
     return token;
 }
@@ -53,7 +54,7 @@ token_T *lexerParseId(lexer_T *lexer) {
         strcat(value, (char[]){lexer->c, 0});
         lexerAdvance(lexer);
     }
-    return init_token(value, TOKEN_ID);
+    return initToken(value, TOKEN_ID);
 }
 
 token_T *lexerParseNumber(lexer_T *lexer) {
@@ -63,13 +64,14 @@ token_T *lexerParseNumber(lexer_T *lexer) {
         strcat(value, (char[]){lexer->c, 0});
         lexerAdvance(lexer);
     }
-    return init_token(value, TOKEN_INT);
+    return initToken(value, TOKEN_INT);
 }
 
 token_T *lexerNextToken(lexer_T *lexer) {
     while (lexer->c != '\0') {
-        if (isalnum(lexer->c)) {
-            return lexerAdvanceWith(lexer, lexerParseId(lexer));
+        lexerSkipWhitespace(lexer);
+        if (isalpha(lexer->c)) {
+            return lexerParseId(lexer);
         }
 
         if (isdigit(lexer->c)) {
@@ -77,8 +79,8 @@ token_T *lexerNextToken(lexer_T *lexer) {
         }
         switch (lexer->c) {
             case '=': {
-                if (lexerPeak(lexer, 1) == '>') return lexerAdvanceWith(lexer, init_token("=>", TOKEN_ARROW_RIGHT));
-                return lexerAdvanceWith(lexer, init_token("=", TOKEN_EQUALS));
+                if (lexerPeak(lexer, 1) == '>') return lexerAdvanceWith(lexer, initToken("=>", TOKEN_ARROW_RIGHT));
+                return lexerAdvanceWith(lexer, initToken("=", TOKEN_EQUALS));
             } break;
             case '(': return lexerAdvanceCurrent(lexer, TOKEN_LPAREN);
             case ')': return lexerAdvanceCurrent(lexer, TOKEN_RPAREN);
@@ -93,5 +95,5 @@ token_T *lexerNextToken(lexer_T *lexer) {
             default: printf("[Lexer]: Unexpected character '%c'\n", lexer->c); exit(1); break;
         }
     }
-    return init_token(0, TOKEN_EOF);
+    return initToken(0, TOKEN_EOF);
 }
