@@ -13,7 +13,7 @@ void chrCompile(char *src) {
     parser_T *parser = initParser(lexer);
     AST_T *root = parserParse(parser);
 
-    char *s = asmF(root);
+    char *s = asmFRoot(root);
     printf("%s\n", s);
 }
 

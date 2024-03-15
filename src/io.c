@@ -30,3 +30,23 @@ char *chrReadFile(const char *filename) {
 
     return buffer;
 }
+
+void chrWriteFile(const char *filename, char *outbuffer) {
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    fp = fopen(filename, "wb");
+    if (fp == NULL) {
+        printf("Could not open file for writing '%s'\n", filename);
+        exit(1);
+    }
+
+    if (!fwrite(fp, outbuffer, sizeof(outbuffer))) {
+        fclose(fp);
+        printf("Could not write to `%s`.\n", filename);
+        exit(1);
+    }
+    fclose(fp)
+}
