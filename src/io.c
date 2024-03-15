@@ -2,6 +2,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+
+static char *sh(char *cmd) {
+    char *output = (char*) calloc(1, sizeof(char));
+    output[0] = '\0';
+
+    FILE *fp;
+    char path[1035];
+
+    fp = popen(cmd, "r");
+
+    if (fp == NULL) {
+        printf("Failed to run command\n");
+        exit(1);
+    }
+
+    while (fgets(path, sizeof(path), fp) != NULL) {
+        output = realloc(output, (strlen(output) + strlen(path) + 1) * sizeof(char));
+        strcat(output, path);
+    }
+    pclose(fp);
+    free(cmd);
+    return output;
+}
 
 char *chrReadFile(const char *filename) {
     FILE *fp;
@@ -33,20 +58,12 @@ char *chrReadFile(const char *filename) {
 
 void chrWriteFile(const char *filename, char *outbuffer) {
     FILE *fp;
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
 
     fp = fopen(filename, "wb");
     if (fp == NULL) {
         printf("Could not open file for writing '%s'\n", filename);
         exit(1);
     }
-
-    if (!fwrite(fp, outbuffer, sizeof(outbuffer))) {
-        fclose(fp);
-        printf("Could not write to `%s`.\n", filename);
-        exit(1);
-    }
-    fclose(fp)
+    fputs(outbuffer, fp);
+    fclose(fp);
 }
