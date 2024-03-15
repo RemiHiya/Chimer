@@ -40,10 +40,8 @@ void chrCompile(char *src) {
     char *s = asmFRoot(root);
 
     chrWriteFile("a.s", s);
-    sh("as a.s -o a.o");
-    sh("ld a.o -o a.out");
-    sh("./a.out");
-    sh("echo $?");
+    sh("as --32 a.s -o a.o");
+    sh("ld a.o -o a.out -m elf_i386");
 }
 
 void chrCompileFile(const char *filename) {

@@ -11,6 +11,7 @@ typedef struct AST_STRUCT {
         AST_TYPE_DEFINITION,
         AST_VARIABLE,
         AST_STATEMENT,
+        AST_ACCESS,
         AST_NOOP,
         AST_INT,
         AST_TYPE,

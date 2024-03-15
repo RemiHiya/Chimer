@@ -87,6 +87,8 @@ token_T *lexerNextToken(lexer_T *lexer) {
             case ')': return lexerAdvanceCurrent(lexer, TOKEN_RPAREN);
             case '{': return lexerAdvanceCurrent(lexer, TOKEN_LBRACE);
             case '}': return lexerAdvanceCurrent(lexer, TOKEN_RBRACE);
+            case '[': return lexerAdvanceCurrent(lexer, TOKEN_LBRACKET);
+            case ']': return lexerAdvanceCurrent(lexer, TOKEN_RBRACKET);
             case ':': return lexerAdvanceCurrent(lexer, TOKEN_COLON);
             case ',': return lexerAdvanceCurrent(lexer, TOKEN_COMMA);
             case '>': return lexerAdvanceCurrent(lexer, TOKEN_GT);

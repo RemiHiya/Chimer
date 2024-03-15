@@ -19,6 +19,8 @@ const char *tokenTypeToStr(int type) {
         case TOKEN_RPAREN: return "TOKEN_RPAREN";
         case TOKEN_LBRACE: return "TOKEN_LBRACE";
         case TOKEN_RBRACE: return "TOKEN_RBRACE";
+        case TOKEN_LBRACKET: return "TOKEN_LBRACKET";
+        case TOKEN_RBRACKET: return "TOKEN_RBRACKET";
         case TOKEN_COLON: return "TOKEN_COLON";
         case TOKEN_COMMA: return "TOKEN_COMMA";
         case TOKEN_LT: return "TOKEN_LT";
