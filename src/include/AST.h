@@ -2,6 +2,8 @@
 #define CHR_AST_H
 #include "list.h"
 
+struct VISITOR_STRUCT;
+
 typedef struct AST_STRUCT {
     enum {
         AST_COMPOUND,
@@ -14,6 +16,7 @@ typedef struct AST_STRUCT {
         AST_ACCESS,
         AST_NOOP,
         AST_INT,
+        AST_STRING,
         AST_TYPE,
     } type;
     list_T *children;
@@ -21,6 +24,7 @@ typedef struct AST_STRUCT {
     struct AST_STRUCT *value;
     int intValue;
     int data_type;
+    struct AST_STRUCT *(*fptr)(struct VISITOR_STRUCT* visitor, struct AST_STRUCT *node, list_T *list);
 } AST_T;
 
 AST_T *initAst(int type);

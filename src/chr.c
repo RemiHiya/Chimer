@@ -1,10 +1,12 @@
-#include "include/chr.h"
+#include "include/asm_frontend.h"
 #include "include/AST.h"
+#include "include/chr.h"
 #include "include/io.h"
 #include "include/lexer.h"
-#include "include/token.h"
+#include "include/list.h"
 #include "include/parser.h"
-#include "include/asm_frontend.h"
+#include "include/token.h"
+#include "include/visitor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,7 +39,11 @@ void chrCompile(char *src) {
     parser_T *parser = initParser(lexer);
     AST_T *root = parserParse(parser);
 
-    char *s = asmFRoot(root);
+    visitor_T *visitor = initVisitor();
+    visitorVisit(visitor, root, initList(sizeof(struct AST_STRUCT)));
+
+    return;
+    char *s = asmFRoot(root, initList(sizeof(struct AST_STRUCT*)));
 
     chrWriteFile("a.s", s);
     sh("as --32 a.s -o a.o");
