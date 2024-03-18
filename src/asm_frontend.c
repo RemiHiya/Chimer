@@ -109,7 +109,10 @@ char *asmFCall(AST_T *ast, list_T *list) {
 }
 
 char *asmFInt(AST_T *ast, list_T *list) {
-
+    const char *template = "$%d";
+    char *s = calloc(strlen(template) + 128, sizeof(char));
+    sprintf(s, template, ast->intValue);
+    return s;
 }
 
 char *asmFAccess(AST_T *ast, list_T *list) {

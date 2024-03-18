@@ -54,7 +54,7 @@ AST_T *visitorVisitAssignement(visitor_T *visitor, AST_T *node, list_T *list) {
     newVar->name = node->name;
     newVar->value = visitorVisit(visitor, node->value, list);
     listPush(list, newVar);
-    return newVar;
+    return node;
 }
 
 AST_T *visitorVisitVariable(visitor_T *visitor, AST_T *node, list_T *list) {
@@ -66,11 +66,18 @@ AST_T *visitorVisitVariable(visitor_T *visitor, AST_T *node, list_T *list) {
 }
 
 AST_T *visitorVisitFunction(visitor_T *visitor, AST_T *node, list_T *list) {
-    AST_T *compound = initAst(AST_COMPOUND);
-    for (unsigned int i=0; i<node->value->children->size; ++i) {
-        listPush(compound->children, visitorVisit(visitor, node->value->children->items[i], list));
+    AST_T *func = initAst(AST_FUNCTION);
+    func->children = initList(sizeof(struct AST_STRUCT*));
+    func->value = initAst(AST_COMPOUND);
+
+    for (unsigned int i=0; i<node->children->size; ++i) {
+        listPush(func->children, node->children->items[i]);
     }
-    return compound;
+
+    for (unsigned int i=0; i<node->value->children->size; ++i) {
+        listPush(func->value->children, visitorVisit(visitor, node->value->children->items[i], list));
+    }
+    return func;
 }
 
 AST_T *visitorVisitCall(visitor_T *visitor, AST_T *node, list_T *list) {
