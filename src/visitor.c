@@ -1,6 +1,7 @@
-#include "include/visitor.h"
 #include "include/AST.h"
+#include "include/builtins.h"
 #include "include/list.h"
+#include "include/visitor.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -19,19 +20,10 @@ static AST_T *varLookup(list_T *list, const char *name) {
     return 0;
 }
 
-static AST_T *fptrPrint(visitor_T *visitor, AST_T *node, list_T *list) {
-    return node;
-}
-
 visitor_T *initVisitor() {
     visitor_T *visitor = calloc(1, sizeof(struct VISITOR_STRUCT));
     visitor->object = initAst(AST_COMPOUND);
-
-    AST_T *fptrPrintVar = initAst(AST_VARIABLE);
-    fptrPrintVar->name = "print";
-    fptrPrintVar->fptr = fptrPrint;
-
-    listPush(visitor->object->children, fptrPrintVar);
+    builtinsInit(visitor->object->children);
     return visitor;
 }
 
@@ -82,21 +74,19 @@ AST_T *visitorVisitFunction(visitor_T *visitor, AST_T *node, list_T *list) {
 }
 
 AST_T *visitorVisitCall(visitor_T *visitor, AST_T *node, list_T *list) {
-    if (strcmp(node->name, "return") == 0) {
-        return node;
-    }
     AST_T *var = varLookup(visitor->object->children, node->name);
 
     if (var) {
         if (var->fptr)
             return var->fptr(visitor, var, node->value->children);
     }
+    return node;
 }
 
 AST_T *visitorVisitInt(visitor_T *visitor, AST_T *node, list_T *list) {
-
+    return node;
 }
 
 AST_T *visitorVisitAccess(visitor_T *visitor, AST_T *node, list_T *list) {
-
+    return node;
 }

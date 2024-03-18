@@ -40,10 +40,9 @@ void chrCompile(char *src) {
     AST_T *root = parserParse(parser);
 
     visitor_T *visitor = initVisitor();
-    visitorVisit(visitor, root, initList(sizeof(struct AST_STRUCT)));
+    AST_T *optimizedRoot = visitorVisit(visitor, root, initList(sizeof(struct AST_STRUCT)));
 
-    return;
-    char *s = asmFRoot(root, initList(sizeof(struct AST_STRUCT*)));
+    char *s = asmFRoot(optimizedRoot, initList(sizeof(struct AST_STRUCT*)));
 
     chrWriteFile("a.s", s);
     sh("as --32 a.s -o a.o");

@@ -1,6 +1,6 @@
 # Variables
 CC = gcc
-CFLAGS = -Wall -Wextra -Isrc/include
+CFLAGS = -Wall -Isrc/include
 LDFLAGS =
 SRC_DIR = src
 BUILD_DIR = build
