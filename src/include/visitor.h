@@ -16,6 +16,7 @@ AST_T *visitorVisitAssignement(visitor_T *visitor, AST_T *node, list_T *list);
 AST_T *visitorVisitVariable(visitor_T *visitor, AST_T *node, list_T *list);
 AST_T *visitorVisitCall(visitor_T *visitor, AST_T *node, list_T *list);
 AST_T *visitorVisitInt(visitor_T *visitor, AST_T *node, list_T *list);
+AST_T *visitorVisitString(visitor_T *visitor, AST_T *node, list_T *list);
 AST_T *visitorVisitAccess(visitor_T *visitor, AST_T *node, list_T *list);
 AST_T *visitorVisitFunction(visitor_T *visitor, AST_T *node, list_T *list);
 

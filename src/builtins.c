@@ -2,6 +2,7 @@
 #include "include/AST.h"
 #include "include/list.h"
 #include "include/visitor.h"
+#include <stdio.h>
 #include <string.h>
 
 static char *mkstr(const char *str) {
@@ -12,7 +13,17 @@ static char *mkstr(const char *str) {
 
 
 AST_T *fptrPrint(visitor_T *visitor, AST_T *node, list_T *list) {
-    return node;
+    AST_T *ast = initAst(AST_STRING);
+
+    const char *template =
+        "movl $4, \%eax\n" // syscall write
+        "movl $1, \%ebx\n" // stdout
+        "movl $0, \%ecx\n" // buffer
+        "movl $0, \%edx\n" // size
+        "int $0x80\n";
+
+    ast->stringValue = mkstr(template);
+    return ast;
 }
 
 void builtinsRegisterFptr(list_T *list, const char *name,

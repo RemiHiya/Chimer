@@ -23,6 +23,7 @@ typedef struct AST_STRUCT {
     char *name;
     struct AST_STRUCT *value;
     int intValue;
+    char *stringValue;
     int data_type;
     struct AST_STRUCT *(*fptr)(struct VISITOR_STRUCT* visitor, struct AST_STRUCT *node, list_T *list);
 } AST_T;

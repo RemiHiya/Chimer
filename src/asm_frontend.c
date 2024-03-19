@@ -115,6 +115,10 @@ char *asmFInt(AST_T *ast, list_T *list) {
     return s;
 }
 
+char *asmFString(AST_T *ast, list_T *list) {
+    return ast->stringValue;
+}
+
 char *asmFAccess(AST_T *ast, list_T *list) {
     AST_T *left = varLookup(list, ast->name);
     char *leftAs = asmF(left, list);
@@ -164,6 +168,7 @@ char *asmF(AST_T *ast, list_T *list) {
         case AST_VARIABLE: nextValue = asmFVariable(ast, list); break;
         case AST_CALL: nextValue = asmFCall(ast, list); break;
         case AST_INT: nextValue = asmFInt(ast, list); break;
+        case AST_STRING: nextValue = asmFString(ast, list); break;
         case AST_ACCESS: nextValue = asmFAccess(ast, list); break;
         default: printf("[Asm Frontend]: No frontend for AST of tpye %d.\n", ast->type); exit(1); break;
     }

@@ -36,6 +36,7 @@ AST_T *visitorVisit(visitor_T *visitor, AST_T *node, list_T *list) {
         case AST_INT: return visitorVisitInt(visitor, node, list); break;
         case AST_ACCESS: return visitorVisitAccess(visitor, node, list); break;
         case AST_FUNCTION: return visitorVisitFunction(visitor, node, list); break;
+        case AST_STRING: return visitorVisitString(visitor, node, list); break;
         default: printf("[Visitor]: Don't know how to handle AST of tpye %d.\n", node->type); exit(1); break;
     }
     return node;
@@ -50,11 +51,11 @@ AST_T *visitorVisitCompound(visitor_T *visitor, AST_T *node, list_T *list) {
 }
 
 AST_T *visitorVisitAssignement(visitor_T *visitor, AST_T *node, list_T *list) {
-    AST_T *newVar = initAst(AST_VARIABLE);
+    AST_T *newVar = initAst(AST_ASSIGNEMENT);
     newVar->name = node->name;
     newVar->value = visitorVisit(visitor, node->value, list);
     listPush(list, newVar);
-    return node;
+    return newVar;
 }
 
 AST_T *visitorVisitVariable(visitor_T *visitor, AST_T *node, list_T *list) {
@@ -68,15 +69,12 @@ AST_T *visitorVisitVariable(visitor_T *visitor, AST_T *node, list_T *list) {
 AST_T *visitorVisitFunction(visitor_T *visitor, AST_T *node, list_T *list) {
     AST_T *func = initAst(AST_FUNCTION);
     func->children = initList(sizeof(struct AST_STRUCT*));
-    func->value = initAst(AST_COMPOUND);
+    func->value = visitorVisit(visitor, node->value, list);
 
     for (unsigned int i=0; i<node->children->size; ++i) {
         listPush(func->children, node->children->items[i]);
     }
 
-    for (unsigned int i=0; i<node->value->children->size; ++i) {
-        listPush(func->value->children, visitorVisit(visitor, node->value->children->items[i], list));
-    }
     return func;
 }
 
@@ -85,12 +83,16 @@ AST_T *visitorVisitCall(visitor_T *visitor, AST_T *node, list_T *list) {
 
     if (var) {
         if (var->fptr)
-            return var->fptr(visitor, var, node->value->children);
+            return visitorVisit(visitor, var->fptr(visitor, var, node->value->children), list);
     }
     return node;
 }
 
 AST_T *visitorVisitInt(visitor_T *visitor, AST_T *node, list_T *list) {
+    return node;
+}
+
+AST_T *visitorVisitString(visitor_T *visitor, AST_T *node, list_T *list) {
     return node;
 }
 
