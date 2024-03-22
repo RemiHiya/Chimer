@@ -1,4 +1,4 @@
 main = (argc: int, argv: Array<String>):int => {
-     print(1);
+     print(1234);
      return(16);
 }
