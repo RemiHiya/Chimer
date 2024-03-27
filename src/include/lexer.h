@@ -19,6 +19,7 @@ token_T *lexerAdvanceCurrent(lexer_T *lexer, int type);
 void lexerSkipWhitespace(lexer_T *lexer);
 token_T *lexerParseId(lexer_T *lexer);
 token_T *lexerParseNumber(lexer_T *lexer);
+token_T *lexerParseString(lexer_T *lexer);
 token_T *lexerNextToken(lexer_T *lexer);
 
 #endif // CHR_LEXER_H_

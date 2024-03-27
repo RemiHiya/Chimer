@@ -26,7 +26,7 @@ char *asmFCompound(AST_T *ast, list_T *list) {
     for (int i=0; i<(int) ast->children->size; ++i) {
         AST_T *childAst = (AST_T*) ast->children->items[i];
         char *nextValue = asmF(childAst, list);
-        value = realloc(value, (strlen(nextValue)+1) * sizeof(char));
+        value = realloc(value, (strlen(value) + strlen(nextValue)+1) * sizeof(char));
         strcat(value, nextValue);
     }
     return value;

@@ -67,6 +67,18 @@ token_T *lexerParseNumber(lexer_T *lexer) {
     return initToken(value, TOKEN_INT);
 }
 
+token_T *lexerParseString(lexer_T *lexer) {
+    char *value = calloc(1, sizeof(char));
+    lexerAdvance(lexer);
+    while(lexer->c != '"') {
+        value = realloc(value, (strlen(value)+2) * sizeof(char));
+        strcat(value, (char[]){lexer->c, 0});
+        lexerAdvance(lexer);
+    }
+    lexerAdvance(lexer);
+    return initToken(value, TOKEN_STRING);
+}
+
 token_T *lexerNextToken(lexer_T *lexer) {
     while (lexer->c != '\0') {
         lexerSkipWhitespace(lexer);
@@ -94,6 +106,7 @@ token_T *lexerNextToken(lexer_T *lexer) {
             case '>': return lexerAdvanceCurrent(lexer, TOKEN_GT);
             case '<': return lexerAdvanceCurrent(lexer, TOKEN_LT);
             case ';': return lexerAdvanceCurrent(lexer, TOKEN_SEMI);
+            case '"': return lexerParseString(lexer);
             case '\0': break;
             default: printf("[Lexer]: Unexpected character '%c'\n", lexer->c); exit(1); break;
         }

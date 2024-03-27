@@ -4,6 +4,7 @@
 #include "include/list.h"
 #include "include/token.h"
 #include "include/types.h"
+#include "include/utils.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -135,11 +136,21 @@ AST_T *parserParseInt(parser_T *parser) {
     return ast;
 }
 
+AST_T *parserParseString(parser_T *parser) {
+    char *value = mkstr(parser->token->value);
+    parserEat(parser, TOKEN_STRING);
+
+    AST_T *ast = initAst(AST_STRING);
+    ast->stringValue = value;
+    return ast;
+}
+
 AST_T *parserParseExpr(parser_T *parser) {
     switch (parser->token->type) {
         case TOKEN_ID: return parserParseId(parser);
         case TOKEN_LPAREN: return parserParseList(parser);
         case TOKEN_INT: return parserParseInt(parser);
+        case TOKEN_STRING: return parserParseString(parser);
         default :
             printf("[Parser]: Unexpected token %s\n", tokenToStr(parser->token));
             exit(1);
