@@ -1,4 +1,5 @@
 #include "include/utils.h"
+#include "include/list.h"
 #include "include/macro.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,23 +31,25 @@ char *strToHex(const char *instr) {
     return hexstr;
 }
 
-char **strToHexChunk(const char *instr, int *nrChunks) {
-    unsigned int len = strlen(instr);
-    unsigned int nbchunks = 1 + len/4;
-    int *nrptr = nrChunks;
-    *nrptr = nbchunks;
+list_T *strToHexChunk(const char *instr) {
+    list_T *list = initList(sizeof(char*));
 
-    char **strlist = calloc(nbchunks * 5, sizeof(char));
+    unsigned int i = 0;
+    char *tmp = calloc(1, sizeof(char));
+    while (instr[i] != '\0') {
+        tmp = realloc(tmp, (strlen(tmp) + 2) * sizeof(char));
+        strcat(tmp, (char[]) {instr[i], 0});
 
-    for (unsigned int i=0; i<(len/4)+1; ++i) {
-        char *chunkstr = mkstr(instr + i*4);
-        chunkstr = realloc(chunkstr, 4);
-        chunkstr[4] = 0;
-        char *hexstr = strToHex(chunkstr);
-        strlist[i] = hexstr;
+        if ((i>0 && (i-1) % 4 == 0) || instr[i] == '\n' || instr[i] == '\t') {
+            char *hexstr = strToHex(tmp);
+            free(tmp);
+            listPush(list, hexstr);
+            tmp = calloc(1, sizeof(char));
+        }
+        ++i;
     }
 
-    return strlist;
+    return list;
 }
 
 char *strFormat(char *instr) {

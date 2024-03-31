@@ -12,7 +12,7 @@ AST_T *fptrPrint(visitor_T *visitor, AST_T *node, list_T *list) {
     AST_T *firstArg = list->size ? list->items[0] : 0;
     char *instr = calloc(128, sizeof(char));
     char *hexstr = 0;
-    int nrChunks = 0;
+    unsigned int nrChunks = 0;
 
     if (firstArg) {
         if (firstArg->type == AST_STRING) {
@@ -23,13 +23,14 @@ AST_T *fptrPrint(visitor_T *visitor, AST_T *node, list_T *list) {
             sprintf(instr, "%d", firstArg->intValue);
         }
 
-        char **chunks = strToHexChunk(instr, &nrChunks);
+        list_T *chunks = strToHexChunk(instr);
+        nrChunks = chunks->size;
 
         char *strpush = calloc(1, sizeof(char));
         const char *pushtemplate = "pushl $0x%s\n";
 
-        for (int i=nrChunks-1; i>=0; --i){
-            char *pushhex = chunks[i];
+        for (unsigned int i=0; i<chunks->size; ++i){
+            char *pushhex = chunks->items[chunks->size-i-1];
             char *push = calloc(strlen(pushhex) + strlen(pushtemplate) + 1, sizeof(char));
             sprintf(push, pushtemplate, pushhex);
             strpush = realloc(strpush, (strlen(strpush)+strlen(push)+1) * sizeof(char));
